@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tambah Laporan</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+        }
+
+        .container {
+            width: 50%;
+            margin: auto;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 6px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Tambah Laporan</h1>
+
+    <a href="{% url 'home' %}">Home</a> |
+    <a href="{% url 'report_list' %}">Daftar</a>
+
+    <br><br>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Simpan</button>
+    </form>
+
+</div>
+
+</body>
+</html>

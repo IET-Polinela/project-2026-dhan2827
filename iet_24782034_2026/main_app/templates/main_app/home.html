@@ -1,2 +1,28 @@
-<h1>Selamat Datang di Kota Lampung</h1>
-<p>Ini halaman Home</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daftar Laporan</title>
+</head>
+<body>
+    <h1>Daftar Laporan Masalah Unila</h1>
+
+    <a href="{% url 'add_report' %}">Tambah Laporan</a>
+    <hr>
+
+    {% if reports %}
+        {% for report in reports %}
+            <div>
+                <h3>{{ report.title }}</h3>
+                <p><strong>Kategori:</strong> {{ report.category }}</p>
+                <p><strong>Keterangan:</strong> {{ report.description }}</p>
+                <p><strong>Lokasi:</strong> {{ report.location }}</p>
+                <p><strong>Status:</strong> {{ report.status }}</p>
+                <p><strong>Dibuat:</strong> {{ report.created_at }}</p>
+            </div>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>Belum ada laporan.</p>
+    {% endif %}
+</body>
+</html>

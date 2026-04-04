@@ -1,0 +1,66 @@
+    <!DOCTYPE html>
+<html>
+<head>
+    <title>Smart City Lampung Timur</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            background-color: #f4f6f9;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 10px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        img {
+            width: 400px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Smart City Reporting</h1>
+        <p>Kabupaten Lampung Timur</p>
+    </div>
+
+    <div class="container">
+        <h2>Selamat Datang 👋</h2>
+        <p>Laporkan masalah kota dengan mudah</p>
+
+        <!-- GANTI GAMBAR NANTI -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Kabupaten_Lampung_Timur.jpg">
+
+        <br><br>
+
+        <a href="{% url 'report_list' %}" class="btn">Lihat Laporan</a>
+        <a href="{% url 'add_report' %}" class="btn">Tambah Laporan</a>
+    </div>
+
+</body>
+</html>
