@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Report
 from .forms import ReportForm
 
@@ -19,3 +19,27 @@ def add_report(request):
         form = ReportForm()
 
     return render(request, 'main_app/add_report.html', {'form': form})
+
+
+def edit_report(request, id):
+    report = get_object_or_404(Report, id=id)
+
+    if request.method == "POST":
+        form = ReportForm(request.POST, instance=report)
+        if form.is_valid():
+            form.save()
+            return redirect('report_list')
+    else:
+        form = ReportForm(instance=report)
+
+    return render(request, 'main_app/edit_report.html', {'form': form, 'report': report})
+
+
+def delete_report(request, id):
+    report = get_object_or_404(Report, id=id)
+
+    if request.method == "POST":
+        report.delete()
+        return redirect('report_list')
+
+    return render(request, 'main_app/delete_report.html', {'report': report})

@@ -29,6 +29,10 @@
             margin-right: 10px;
             color: blue;
         }
+
+        .actions {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -49,6 +53,12 @@
                 <p><b>Kategori:</b> {{ report.category }}</p>
                 <p>{{ report.description }}</p>
                 <p><b>Lokasi:</b> {{ report.location }}</p>
+
+                <!-- ✅ ACTION BUTTONS -->
+                <div class="actions">
+                    <a href="{% url 'edit_report' report.id %}">Edit</a>
+                    <a href="{% url 'delete_report' report.id %}">Hapus</a>
+                </div>
             </div>
         {% endfor %}
     {% else %}

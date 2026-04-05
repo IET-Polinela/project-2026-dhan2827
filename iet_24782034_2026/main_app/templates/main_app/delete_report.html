@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hapus Laporan</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+        }
+
+        .container {
+            width: 50%;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Hapus Laporan</h2>
+        <p>Apakah kamu yakin ingin menghapus laporan ini?</p>
+        <p><strong>{{ report.title }}</strong></p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Ya, Hapus</button>
+        </form>
+
+        <a href="{% url 'report_list' %}">Batal</a>
+    </div>
+</div>
+
+</body>
+</html>
