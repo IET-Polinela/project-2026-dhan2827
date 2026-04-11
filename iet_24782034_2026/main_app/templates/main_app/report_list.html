@@ -1,16 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Daftar Laporan</title>
+    <title>Dashboard Laporan</title>
     <style>
         body {
             font-family: Arial;
             background: #f4f6f9;
+            margin: 0;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-bottom: 5px solid #f1c40f;
+        }
+
+        .nav a {
+            color: white;
+            margin-right: 10px;
+            text-decoration: none;
         }
 
         .container {
-            width: 70%;
+            width: 80%;
             margin: auto;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: #c0392b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
         }
 
         .card {
@@ -18,52 +41,87 @@
             padding: 15px;
             margin-top: 15px;
             border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
         }
 
-        .nav {
-            margin-top: 20px;
+        .status {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: white;
         }
 
-        a {
-            text-decoration: none;
-            margin-right: 10px;
-            color: blue;
-        }
+        .REPORTED { background: #c0392b; }
+        .VERIFIED { background: #2980b9; }
+        .IN_PROGRESS { background: #f1c40f; color: black; }
+        .RESOLVED { background: #27ae60; }
 
-        .actions {
-            margin-top: 10px;
+        .date {
+            font-size: 12px;
+            color: gray;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-
-    <h1>Daftar Laporan</h1>
-
+<div class="header">
+    <h2>📊 Dashboard Laporan Lampung Timur</h2>
     <div class="nav">
         <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'add_report' %}">Tambah Laporan</a>
     </div>
+</div>
 
-    {% if reports %}
-        {% for report in reports %}
-            <div class="card">
-                <h3>{{ report.title }}</h3>
-                <p><b>Kategori:</b> {{ report.category }}</p>
-                <p>{{ report.description }}</p>
-                <p><b>Lokasi:</b> {{ report.location }}</p>
+<div class="container">
 
-                <!-- ✅ ACTION BUTTONS -->
-                <div class="actions">
-                    <a href="{% url 'edit_report' report.id %}">Edit</a>
-                    <a href="{% url 'delete_report' report.id %}">Hapus</a>
-                </div>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>Belum ada laporan 😢</p>
+<a href="{% url 'report_create' %}" class="btn">+ Tambah Laporan</a>
+
+{% for report in reports %}
+<div class="card">
+    <h3>{{ report.title }}</h3>
+
+    <p>{{ report.description }}</p>
+
+    <p class="date">
+        Dibuat: {{ report.created_at|date:"d M Y H:i" }}
+    </p>
+
+    <p>
+        Status:
+        <span class="status {{ report.status }}">
+            {{ report.status }}
+        </span>
+    </p>
+
+    {% if report.status == "REPORTED" %}
+    <form method="post" action="{% url 'update_status' report.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="VERIFIED">
+        <button>Verifikasi</button>
+    </form>
     {% endif %}
+
+    {% if report.status == "VERIFIED" %}
+    <form method="post" action="{% url 'update_status' report.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="IN_PROGRESS">
+        <button>Proses</button>
+    </form>
+    {% endif %}
+
+    {% if report.status == "IN_PROGRESS" %}
+    <form method="post" action="{% url 'update_status' report.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="status" value="RESOLVED">
+        <button>Selesaikan</button>
+    </form>
+    {% endif %}
+
+    <br>
+    <a href="{% url 'report_update' report.pk %}">✏ Edit</a> |
+    <a href="{% url 'report_delete' report.pk %}">🗑 Hapus</a>
+
+</div>
+{% endfor %}
 
 </div>
 

@@ -1,11 +1,13 @@
 from django.urls import path
-from . import views
+from .views import *
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('reports/', views.report_list, name='report_list'),
-    path('reports/add/', views.add_report, name='add_report'),
+    path('', home, name='home'),
 
-    path('reports/edit/<int:id>/', views.edit_report, name='edit_report'),
-    path('reports/delete/<int:id>/', views.delete_report, name='delete_report'),
+    path('reports/', ReportListView.as_view(), name='report_list'),
+    path('reports/create/', ReportCreateView.as_view(), name='report_create'),
+    path('reports/<int:pk>/edit/', ReportUpdateView.as_view(), name='report_update'),
+    path('reports/<int:pk>/delete/', ReportDeleteView.as_view(), name='report_delete'),
+
+    path('reports/<int:pk>/update-status/', ReportUpdateStatusView.as_view(), name='update_status'),
 ]
