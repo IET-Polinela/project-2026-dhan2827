@@ -1,64 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Laporan</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f9;
-        }
+{% extends 'base.html' %}
 
-        .container {
-            width: 50%;
-            margin: auto;
-        }
+{% block title %}Edit Laporan{% endblock %}
 
-        .card {
-            background: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 10px;
-        }
+{% block content %}
 
-        input, textarea {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 8px;
-        }
+<h2>Edit Laporan</h2>
 
-        button {
-            padding: 10px 15px;
-            background: green;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
 
-        a {
-            display: inline-block;
-            margin-top: 10px;
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
+    <button type="submit" class="btn btn-success">Update</button>
+</form>
 
-<div class="container">
+<a href="{% url 'report_list' %}" class="btn btn-secondary mt-2">Kembali</a>
 
-    <div class="card">
-        <h2>Edit Laporan</h2>
-
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-
-            <button type="submit">Update</button>
-        </form>
-
-        <a href="{% url 'report_list' %}">← Kembali</a>
-    </div>
-
-</div>
-
-</body>
-</html>
+{% endblock %}

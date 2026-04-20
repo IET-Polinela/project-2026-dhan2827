@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hapus</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-<h2>Yakin hapus?</h2>
+{% block title %}Hapus{% endblock %}
 
+{% block content %}
+
+<h3>Yakin hapus?</h3>
 <p>{{ object.title }}</p>
 
 <form method="post">
     {% csrf_token %}
-    <button type="submit">Hapus</button>
+    <button type="submit" class="btn btn-danger">Hapus</button>
 </form>
 
-<a href="{% url 'report_list' %}">Batal</a>
+<a href="{% url 'report_list' %}" class="btn btn-secondary mt-2">Batal</a>
 
-</body>
-</html>
+{% endblock %}

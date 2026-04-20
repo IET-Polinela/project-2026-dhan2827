@@ -1,2 +1,24 @@
-<h1 style="color:rgb(255, 0, 195);">ABOUT PAGE BERHASIL</h1>
-<p>Ini halaman tentang website saya</p>
+{% extends 'base.html' %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-3">
+    <i class="bi bi-info-circle"></i> Tentang Aplikasi
+</h3>
+
+<div class="card shadow-sm p-4">
+
+    <p><strong>Lampung Timur Report</strong> adalah aplikasi Smart City berbasis web yang digunakan untuk mengelola laporan masyarakat.</p>
+
+    <p>Fitur utama:</p>
+    <ul>
+        <li>Tambah laporan</li>
+        <li>Monitoring status laporan</li>
+        <li>Manajemen data laporan</li>
+    </ul>
+
+</div>
+
+{% endblock %}

@@ -1,2 +1,85 @@
-<h1>Contact Us</h1>
-<p>Email: dhani.de.ace@gmail.com</p>
+{% extends 'base.html' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block breadcrumb %}
+<nav>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">Contact</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<h3 class="mb-4 text-center">
+    <i class="bi bi-envelope"></i> Hubungi Saya
+</h3>
+
+<p class="text-center text-muted mb-4">
+    Silakan hubungi saya melalui platform berikut 👇
+</p>
+
+<div class="row g-4 justify-content-center">
+
+    <!-- EMAIL -->
+    <div class="col-md-6 col-lg-3">
+        <a href="mailto:dhani.de.ace@gmail.com" class="text-decoration-none">
+            <div class="card shadow-sm text-center p-4 h-100 hover-card">
+                <i class="bi bi-envelope-fill fs-1 text-primary mb-3"></i>
+                <h6 class="fw-bold">Email</h6>
+                <p class="text-muted small">dhani.de.ace@gmail.com</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- GITHUB -->
+    <div class="col-md-6 col-lg-3">
+        <a href="https://github.com/dhan2827" target="_blank" class="text-decoration-none">
+            <div class="card shadow-sm text-center p-4 h-100 hover-card">
+                <i class="bi bi-github fs-1 text-dark mb-3"></i>
+                <h6 class="fw-bold">GitHub</h6>
+                <p class="text-muted small">github.com/dhan2827</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- YOUTUBE -->
+    <div class="col-md-6 col-lg-3">
+        <a href="https://youtube.com/@Rdhanii" target="_blank" class="text-decoration-none">
+            <div class="card shadow-sm text-center p-4 h-100 hover-card">
+                <i class="bi bi-youtube fs-1 text-danger mb-3"></i>
+                <h6 class="fw-bold">YouTube</h6>
+                <p class="text-muted small">youtube.com/@Rdhanii</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- INSTAGRAM -->
+    <div class="col-md-6 col-lg-3">
+        <a href="https://instagram.com/acrdhni" target="_blank" class="text-decoration-none">
+            <div class="card shadow-sm text-center p-4 h-100 hover-card">
+                <i class="bi bi-instagram fs-1 text-warning mb-3"></i>
+                <h6 class="fw-bold">Instagram</h6>
+                <p class="text-muted small">@acrdhni</p>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<!-- 🔥 STYLE TAMBAHAN -->
+<style>
+.hover-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+}
+
+.hover-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+</style>
+
+{% endblock %}

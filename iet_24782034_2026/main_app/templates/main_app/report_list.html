@@ -1,129 +1,117 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard Laporan</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f9;
-            margin: 0;
-        }
+{% extends 'base.html' %}
 
-        .header {
-            background: #2c3e50;
-            color: white;
-            padding: 20px;
-            border-bottom: 5px solid #f1c40f;
-        }
+{% block title %}Daftar Laporan{% endblock %}
 
-        .nav a {
-            color: white;
-            margin-right: 10px;
-            text-decoration: none;
-        }
+{% block breadcrumb %}
+<nav>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item active">Reports</li>
+  </ol>
+</nav>
+{% endblock %}
 
-        .container {
-            width: 80%;
-            margin: auto;
-            margin-top: 20px;
-        }
+{% block content %}
 
-        .btn {
-            background: #c0392b;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-        }
+<h2 class="mb-3">Daftar Laporan</h2>
 
-        .card {
-            background: white;
-            padding: 15px;
-            margin-top: 15px;
-            border-radius: 10px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-        }
+<a href="{% url 'report_create' %}" class="btn btn-primary mb-3">
+    + Tambah Laporan
+</a>
 
-        .status {
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            color: white;
-        }
+{% if reports %}
 
-        .REPORTED { background: #c0392b; }
-        .VERIFIED { background: #2980b9; }
-        .IN_PROGRESS { background: #f1c40f; color: black; }
-        .RESOLVED { background: #27ae60; }
+<div class="table-responsive">
+<table class="table table-striped table-bordered table-hover align-middle">
 
-        .date {
-            font-size: 12px;
-            color: gray;
-        }
-    </style>
-</head>
-<body>
+<thead class="table-dark text-center">
+<tr>
+<th>Judul</th>
+<th>Lokasi</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
 
-<div class="header">
-    <h2>📊 Dashboard Laporan Lampung Timur</h2>
-    <div class="nav">
-        <a href="{% url 'home' %}">Home</a>
-    </div>
-</div>
-
-<div class="container">
-
-<a href="{% url 'report_create' %}" class="btn">+ Tambah Laporan</a>
-
+<tbody>
 {% for report in reports %}
-<div class="card">
-    <h3>{{ report.title }}</h3>
+<tr>
 
-    <p>{{ report.description }}</p>
+<td>{{ report.title }}</td>
+<td>{{ report.location }}</td>
 
-    <p class="date">
-        Dibuat: {{ report.created_at|date:"d M Y H:i" }}
-    </p>
+<td class="text-center">
+{% if report.status == "REPORTED" %}
+<span class="badge bg-secondary">Reported</span>
+{% elif report.status == "VERIFIED" %}
+<span class="badge bg-info">Verified</span>
+{% elif report.status == "IN_PROGRESS" %}
+<span class="badge bg-warning">In Progress</span>
+{% elif report.status == "RESOLVED" %}
+<span class="badge bg-success">Resolved</span>
+{% endif %}
+</td>
 
-    <p>
-        Status:
-        <span class="status {{ report.status }}">
-            {{ report.status }}
-        </span>
-    </p>
+<td class="text-nowrap text-center">
 
-    {% if report.status == "REPORTED" %}
-    <form method="post" action="{% url 'update_status' report.pk %}">
-        {% csrf_token %}
-        <input type="hidden" name="status" value="VERIFIED">
-        <button>Verifikasi</button>
-    </form>
-    {% endif %}
+<!-- 🔥 DETAIL (READ) -->
+<a href="{% url 'report_detail' report.pk %}" 
+   class="btn btn-info btn-sm me-1">
+   <i class="bi bi-eye"></i>
+</a>
 
-    {% if report.status == "VERIFIED" %}
-    <form method="post" action="{% url 'update_status' report.pk %}">
-        {% csrf_token %}
-        <input type="hidden" name="status" value="IN_PROGRESS">
-        <button>Proses</button>
-    </form>
-    {% endif %}
+<!-- EDIT -->
+<a href="{% url 'report_update' report.pk %}" 
+   class="btn btn-warning btn-sm me-1">
+   <i class="bi bi-pencil"></i>
+</a>
 
-    {% if report.status == "IN_PROGRESS" %}
-    <form method="post" action="{% url 'update_status' report.pk %}">
-        {% csrf_token %}
-        <input type="hidden" name="status" value="RESOLVED">
-        <button>Selesaikan</button>
-    </form>
-    {% endif %}
+<!-- DELETE -->
+<a href="{% url 'report_delete' report.pk %}" 
+   class="btn btn-danger btn-sm me-1"
+   onclick="return confirm('Yakin hapus?')">
+   <i class="bi bi-trash"></i>
+</a>
 
-    <br>
-    <a href="{% url 'report_update' report.pk %}">✏ Edit</a> |
-    <a href="{% url 'report_delete' report.pk %}">🗑 Hapus</a>
+<!-- WORKFLOW -->
+{% if report.status == "REPORTED" %}
+<form method="post" action="{% url 'update_status' report.pk %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="VERIFIED">
+<button class="btn btn-info btn-sm">Verify</button>
+</form>
+{% endif %}
 
-</div>
+{% if report.status == "VERIFIED" %}
+<form method="post" action="{% url 'update_status' report.pk %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="IN_PROGRESS">
+<button class="btn btn-warning btn-sm">Proses</button>
+</form>
+{% endif %}
+
+{% if report.status == "IN_PROGRESS" %}
+<form method="post" action="{% url 'update_status' report.pk %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="RESOLVED">
+<button class="btn btn-success btn-sm">Selesai</button>
+</form>
+{% endif %}
+
+</td>
+</tr>
 {% endfor %}
-
+</tbody>
+</table>
 </div>
 
-</body>
-</html>
+{% else %}
+
+<div class="text-center">
+<h5>Belum ada laporan</h5>
+<a href="{% url 'report_create' %}" class="btn btn-primary">Tambah</a>
+</div>
+
+{% endif %}
+
+{% endblock %}

@@ -1,118 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Smart City Lampung Timur</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial;
-            background: #f4f6f9;
-        }
+{% extends 'base.html' %}
 
-        /* 🔥 HERO LAMPUNG */
-        .hero {
-            background: linear-gradient(135deg, #2c3e50, #c0392b, #f1c40f);
-            color: white;
-            text-align: center;
-            padding: 80px 20px;
-        }
+{% block content %}
 
-        .hero h1 {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
+<div class="text-center">
+    <h1>Selamat Datang</h1>
+    <p>Aplikasi Laporan Smart City</p>
 
-        .hero p {
-            font-size: 18px;
-        }
-
-        .btn {
-            display: inline-block;
-            margin: 10px;
-            padding: 12px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .btn-primary {
-            background: #f1c40f;
-            color: black;
-        }
-
-        .btn-secondary {
-            background: #c0392b;
-            color: white;
-        }
-
-        /* 🔥 SECTION */
-        .container {
-            width: 80%;
-            margin: auto;
-            margin-top: 40px;
-            text-align: center;
-        }
-
-        .cards {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            width: 30%;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: gray;
-        }
-    </style>
-</head>
-<body>
-
-<div class="hero">
-    <h1>🌆 Laporan Masalah Daerah Lampung Timur</h1>
-    <p>Wujudkan Lampung Timur yang lebih baik melalui laporan masyarakat</p>
-
-    <a href="{% url 'report_create' %}" class="btn btn-primary">+ Buat Laporan</a>
-    <a href="{% url 'report_list' %}" class="btn btn-secondary">Lihat Laporan</a>
-
-    <p style="margin-top:20px; font-size:14px;">
-        🇮🇩 Kabupaten Lampung Timur • Bersama Membangun Daerah
-    </p>
+    <a href="{% url 'report_list' %}" class="btn btn-primary">
+        Lihat Laporan
+    </a>
 </div>
 
-<div class="container">
-    <h2>Kenapa Pakai Aplikasi Ini?</h2>
-
-    <div class="cards">
-        <div class="card">
-            <h3>⚡ Cepat</h3>
-            <p>Laporkan masalah hanya dalam beberapa detik</p>
-        </div>
-
-        <div class="card">
-            <h3>📊 Terpantau</h3>
-            <p>Status laporan bisa dipantau secara real-time</p>
-        </div>
-
-        <div class="card">
-            <h3>🏙️ Smart City</h3>
-            <p>Membantu membangun Lampung Timur lebih baik</p>
-        </div>
-    </div>
-</div>
-
-<div class="footer">
-    © 2026 Smart City Lampung Timur
-</div>
-
-</body>
-</html>
+{% endblock %}

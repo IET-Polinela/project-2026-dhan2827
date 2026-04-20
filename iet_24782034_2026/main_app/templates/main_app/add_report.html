@@ -1,92 +1,89 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Form Laporan</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f9;
-            margin: 0;
-        }
+{% extends 'base.html' %}
 
-        .container {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+{% block title %}Tambah Laporan{% endblock %}
 
-        .card {
-            background: white;
-            padding: 30px;
-            width: 400px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+{% block breadcrumb %}
+<nav>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'report_list' %}">Reports</a></li>
+    <li class="breadcrumb-item active">Tambah</li>
+  </ol>
+</nav>
+{% endblock %}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+{% block content %}
 
-        .nav {
-            text-align: center;
-            margin-bottom: 15px;
-        }
+<h4 class="mb-4">
+    <i class="bi bi-pencil-square"></i> Tambah Laporan
+</h4>
 
-        .nav a {
-            text-decoration: none;
-            color: #3498db;
-            margin: 0 5px;
-        }
+<!-- ERROR -->
+{% if form.errors %}
+<div class="alert alert-danger">
+    {{ form.errors }}
+</div>
+{% endif %}
 
-        form p {
-            margin-bottom: 15px;
-        }
+<form method="post">
+{% csrf_token %}
 
-        input, textarea {
-            width: 100%;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
+<div class="row g-4">
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+    <!-- LEFT -->
+    <div class="col-md-6">
 
-        button:hover {
-            background: #2980b9;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <div class="card">
-
-        <h1>Form Laporan</h1>
-
-        <div class="nav">
-            <a href="{% url 'home' %}">Home</a> |
-            <a href="{% url 'report_list' %}">Daftar Laporan</a>
+        <div class="form-floating">
+            {{ form.title }}
+            <label>Judul</label>
         </div>
 
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Simpan</button>
-        </form>
+        <div class="form-floating mt-3">
+            {{ form.category }}
+            <label>Kategori</label>
+        </div>
+
+        <div class="form-floating mt-3">
+            {{ form.location }}
+            <label>Lokasi</label>
+        </div>
 
     </div>
+
+    <!-- RIGHT -->
+    <div class="col-md-6">
+
+        <label class="form-label fw-semibold">Deskripsi</label>
+        {{ form.description }}
+
+    </div>
+
 </div>
 
-</body>
-</html>
+<hr class="my-4">
+
+<!-- BUTTON -->
+<div class="d-flex justify-content-end gap-2">
+
+    <a href="{% url 'report_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+
+    <button id="btn" class="btn btn-primary px-4">
+        <i class="bi bi-send"></i> Submit
+    </button>
+
+</div>
+
+</form>
+
+<!-- LOADING -->
+<script>
+document.querySelector("form").addEventListener("submit", function(){
+    let btn = document.getElementById("btn");
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+    btn.disabled = true;
+});
+</script>
+
+{% endblock %}
