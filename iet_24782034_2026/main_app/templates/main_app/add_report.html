@@ -4,11 +4,11 @@
 
 {% block breadcrumb %}
 <nav>
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'report_list' %}">Reports</a></li>
-    <li class="breadcrumb-item active">Tambah</li>
-  </ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'report_list' %}">Reports</a></li>
+        <li class="breadcrumb-item active">Tambah</li>
+    </ol>
 </nav>
 {% endblock %}
 
@@ -18,71 +18,76 @@
     <i class="bi bi-pencil-square"></i> Tambah Laporan
 </h4>
 
-<!-- ERROR -->
 {% if form.errors %}
 <div class="alert alert-danger">
     {{ form.errors }}
 </div>
 {% endif %}
 
-<form method="post">
-{% csrf_token %}
+<form method="post" id="reportForm">
+    {% csrf_token %}
 
-<div class="row g-4">
+    <div class="row g-4">
 
-    <!-- LEFT -->
-    <div class="col-md-6">
+        <!-- LEFT -->
+        <div class="col-md-6">
+            <div class="form-floating">
+                {{ form.title }}
+                <label>Judul</label>
+            </div>
 
-        <div class="form-floating">
-            {{ form.title }}
-            <label>Judul</label>
+            <div class="form-floating mt-3">
+                {{ form.category }}
+                <label>Kategori</label>
+            </div>
+
+            <div class="form-floating mt-3">
+                {{ form.location }}
+                <label>Lokasi</label>
+            </div>
         </div>
 
-        <div class="form-floating mt-3">
-            {{ form.category }}
-            <label>Kategori</label>
+        <!-- RIGHT -->
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Deskripsi</label>
+            {{ form.description }}
         </div>
-
-        <div class="form-floating mt-3">
-            {{ form.location }}
-            <label>Lokasi</label>
-        </div>
-
     </div>
 
-    <!-- RIGHT -->
-    <div class="col-md-6">
+    <hr class="my-4">
 
-        <label class="form-label fw-semibold">Deskripsi</label>
-        {{ form.description }}
+    <div class="d-flex justify-content-end gap-2">
+        <a href="{% url 'report_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Kembali
+        </a>
 
+        <button type="submit" id="btn" class="btn btn-primary px-4">
+            <i class="bi bi-send"></i> Submit
+        </button>
     </div>
-
-</div>
-
-<hr class="my-4">
-
-<!-- BUTTON -->
-<div class="d-flex justify-content-end gap-2">
-
-    <a href="{% url 'report_list' %}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left"></i> Kembali
-    </a>
-
-    <button id="btn" class="btn btn-primary px-4">
-        <i class="bi bi-send"></i> Submit
-    </button>
-
-</div>
-
 </form>
 
-<!-- LOADING -->
 <script>
-document.querySelector("form").addEventListener("submit", function(){
-    let btn = document.getElementById("btn");
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
-    btn.disabled = true;
+document.getElementById("reportForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Yakin mau simpan?',
+        text: 'Pastikan data laporan sudah benar.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0d6efd',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, simpan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let btn = document.getElementById("btn");
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+            btn.disabled = true;
+            document.getElementById("reportForm").submit();
+        }
+    });
 });
 </script>
 

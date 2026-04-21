@@ -1,17 +1,50 @@
 {% extends 'base.html' %}
 
-{% block title %}Hapus{% endblock %}
+{% block title %}Hapus Laporan{% endblock %}
+
+{% block breadcrumb %}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'report_list' %}">Reports</a></li>
+        <li class="breadcrumb-item active">Hapus</li>
+    </ol>
+</nav>
+{% endblock %}
 
 {% block content %}
 
-<h3>Yakin hapus?</h3>
-<p>{{ object.title }}</p>
+<div class="text-center py-4">
+    <i class="bi bi-exclamation-circle text-danger" style="font-size: 60px;"></i>
+    <h3 class="mt-3">Yakin ingin menghapus?</h3>
+    <p class="text-muted">Laporan <strong>{{ object.title }}</strong> akan dihapus permanen.</p>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Hapus</button>
-</form>
+    <form method="post" id="deleteForm">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger px-4">Delete</button>
+        <a href="{% url 'report_list' %}" class="btn btn-secondary px-4">Cancel</a>
+    </form>
+</div>
 
-<a href="{% url 'report_list' %}" class="btn btn-secondary mt-2">Batal</a>
+<script>
+document.getElementById("deleteForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Data ini tidak bisa dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("deleteForm").submit();
+        }
+    });
+});
+</script>
 
 {% endblock %}
