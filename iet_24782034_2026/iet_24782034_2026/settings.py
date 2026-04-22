@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'main_app',
     'about',
     'contacts',
+    'usermanagement_24782034',
 ]
+
+AUTH_USER_MODEL = 'usermanagement_24782034.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,7 +81,7 @@ WSGI_APPLICATION = 'iet_24782034_2026.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'smartcity_db',
+        'NAME': 'smartcity_lampungtimur',
         'USER': 'postgres',
         'PASSWORD': 'dhani123A',
         'HOST': 'localhost',
@@ -122,3 +125,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+LOGIN_REDIRECT_URL = '/reports/'
+LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_URL = '/login/'

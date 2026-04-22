@@ -1,13 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}Tambah Laporan{% endblock %}
+{% block title %}
+    {% if object %}
+        Edit Laporan
+    {% else %}
+        Tambah Laporan
+    {% endif %}
+{% endblock %}
 
 {% block breadcrumb %}
 <nav>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">Home</a></li>
         <li class="breadcrumb-item"><a href="{% url 'report_list' %}">Reports</a></li>
-        <li class="breadcrumb-item active">Tambah</li>
+        <li class="breadcrumb-item active">
+            {% if object %}
+                Edit
+            {% else %}
+                Tambah
+            {% endif %}
+        </li>
     </ol>
 </nav>
 {% endblock %}
@@ -15,7 +27,12 @@
 {% block content %}
 
 <h4 class="mb-4">
-    <i class="bi bi-pencil-square"></i> Tambah Laporan
+    <i class="bi bi-pencil-square"></i> 
+    {% if object %}
+        Edit Laporan
+    {% else %}
+        Tambah Laporan
+    {% endif %}
 </h4>
 
 {% if form.errors %}
@@ -52,19 +69,28 @@
             <label class="form-label fw-semibold">Deskripsi</label>
             {{ form.description }}
         </div>
+
     </div>
 
     <hr class="my-4">
 
     <div class="d-flex justify-content-end gap-2">
+
         <a href="{% url 'report_list' %}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Kembali
         </a>
 
         <button type="submit" id="btn" class="btn btn-primary px-4">
-            <i class="bi bi-send"></i> Submit
+            <i class="bi bi-check2"></i>
+            {% if object %}
+                Update
+            {% else %}
+                Submit
+            {% endif %}
         </button>
+
     </div>
+
 </form>
 
 <script>

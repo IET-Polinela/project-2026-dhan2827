@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block breadcrumb %}
+<nav>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active">Login</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+
+        <h3 class="mb-4 text-center">
+            <i class="bi bi-box-arrow-in-right"></i> Login
+        </h3>
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            Username atau password salah.
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-floating mb-3">
+                <input type="text" name="username" class="form-control" placeholder="Username">
+                <label>Username</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Password">
+                <label>Password</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Login
+            </button>
+
+        </form>
+
+        <p class="text-center mt-3">
+            Belum punya akun? 
+            <a href="{% url 'register' %}">Register</a>
+        </p>
+
+    </div>
+</div>
+
+{% endblock %}

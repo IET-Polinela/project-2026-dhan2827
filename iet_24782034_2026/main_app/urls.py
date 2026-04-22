@@ -1,8 +1,14 @@
 from django.urls import path
+from django.urls import path
+from .views import *
+from usermanagement_24782034.views import CustomLoginView, CustomLogoutView 
 from .views import *
 
 urlpatterns = [
     path('', home, name='home'),
+
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
 
     path('reports/', ReportListView.as_view(), name='report_list'),
     path('reports/create/', ReportCreateView.as_view(), name='report_create'),
