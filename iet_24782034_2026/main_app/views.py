@@ -3,6 +3,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 from django.urls import reverse_lazy
 from django.views import View
 from django.contrib import messages
+from django.http import JsonResponse
+from django.db.models import Q
 
 from .models import Report
 from .forms import ReportForm
@@ -96,3 +98,67 @@ class ReportUpdateStatusView(AdminRequiredMixin, View):
             messages.error(request, "Perubahan status tidak valid!")
 
         return redirect('report_list')
+    
+class ReportSearchView(View):
+    def get(self, request):
+        keyword = request.GET.get('q', '')
+
+        reports = Report.objects.filter(
+            Q(title__icontains=keyword) |
+            Q(category__icontains=keyword) |
+            Q(status__icontains=keyword) |
+            Q(location__icontains=keyword)
+        ).order_by('-id')
+
+        data = [
+            {
+                'id': report.id,
+                'title': report.title,
+                'category': report.category,
+                'location': report.location,
+                'status': report.status,
+            }
+            for report in reports
+        ]
+
+        return JsonResponse({'reports': data})
+
+
+class ReportDetailJsonView(View):
+    def get(self, request, pk):
+        report = Report.objects.get(pk=pk)
+
+        data = {
+            'id': report.id,
+            'title': report.title,
+            'category': report.category,
+            'description': report.description,
+            'location': report.location,
+            'status': report.status,
+        }
+
+        return JsonResponse(data)
+    
+class ReportSearchView(View):
+    def get(self, request):
+        keyword = request.GET.get('q', '')
+
+        reports = Report.objects.filter(
+            Q(title__icontains=keyword) |
+            Q(location__icontains=keyword) |
+            Q(status__icontains=keyword) |
+            Q(category__icontains=keyword)
+        ).order_by('-id')
+
+        data = []
+
+        for report in reports:
+            data.append({
+                'id': report.id,
+                'title': report.title,
+                'location': report.location,
+                'status': report.status,
+                'category': report.category,
+            })
+
+        return JsonResponse({'reports': data})

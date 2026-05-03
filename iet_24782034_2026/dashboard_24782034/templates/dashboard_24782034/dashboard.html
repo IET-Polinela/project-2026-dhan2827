@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4 fw-bold">Dashboard Laporan</h2>
+
+    <!-- RINGKASAN ATAS -->
+    <div class="row mb-4" id="summaryCards">
+        <div class="col-md-3 mb-3">
+            <div class="card text-center shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Laporan</h6>
+                    <h3 class="fw-bold" id="totalReports">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHART -->
+    <div class="row g-3">
+        <div class="col-md-5">
+            <div class="card p-3 shadow-sm h-100">
+                <h5 class="fw-bold mb-3">Distribusi Status</h5>
+                <div class="chart-box">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card p-3 shadow-sm h-100">
+                <h5 class="fw-bold mb-3">Distribusi Kategori</h5>
+                <div class="chart-box">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RINGKASAN DETAIL -->
+    <div class="row g-3 mt-3">
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5 class="fw-bold">Ringkasan Status</h5>
+                <div id="statusSummary"></div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5 class="fw-bold">Ringkasan Kategori</h5>
+                <div id="categorySummary"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABEL -->
+    <div class="row g-3 mt-3">
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5 class="fw-bold">5 Laporan Terbaru Dilaporkan</h5>
+                <table class="table table-sm table-bordered table-striped mt-2">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Judul</th>
+                            <th>Kategori</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportedTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+                <h5 class="fw-bold">5 Laporan Terbaru Selesai</h5>
+                <table class="table table-sm table-bordered table-striped mt-2">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Judul</th>
+                            <th>Kategori</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resolvedTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chart-box {
+        height: 280px;
+        position: relative;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #eee;
+        padding: 8px 0;
+        font-size: 15px;
+    }
+
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('/dashboard/data/')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data dashboard:', data);
+
+            const totalReports = data.status_counts.reduce((a, b) => a + b, 0);
+            document.getElementById('totalReports').textContent = totalReports;
+
+            const summaryCards = document.getElementById('summaryCards');
+
+            data.status_labels.forEach((label, index) => {
+                const count = data.status_counts[index];
+
+                summaryCards.innerHTML += `
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-center shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="text-muted">${label}</h6>
+                                <h3 class="fw-bold">${count}</h3>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            new Chart(document.getElementById('statusChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: data.status_labels,
+                    datasets: [{
+                        data: data.status_counts
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    const percentage = ((value / totalReports) * 100).toFixed(1);
+                                    return `${context.label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('categoryChart'), {
+                type: 'bar',
+                data: {
+                    labels: data.category_labels,
+                    datasets: [{
+                        label: 'Jumlah Laporan',
+                        data: data.category_counts
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            const statusSummary = document.getElementById('statusSummary');
+            data.status_labels.forEach((label, index) => {
+                const count = data.status_counts[index];
+                const percentage = ((count / totalReports) * 100).toFixed(1);
+
+                statusSummary.innerHTML += `
+                    <div class="summary-item">
+                        <span>${label}</span>
+                        <strong>${count} laporan (${percentage}%)</strong>
+                    </div>
+                `;
+            });
+
+            const categorySummary = document.getElementById('categorySummary');
+            data.category_labels.forEach((label, index) => {
+                const count = data.category_counts[index];
+
+                categorySummary.innerHTML += `
+                    <div class="summary-item">
+                        <span>${label}</span>
+                        <strong>${count} laporan</strong>
+                    </div>
+                `;
+            });
+
+            const reportedTable = document.getElementById('reportedTable');
+            const resolvedTable = document.getElementById('resolvedTable');
+
+            data.latest_reported.forEach(report => {
+                reportedTable.innerHTML += `
+                    <tr>
+                        <td>${report.title}</td>
+                        <td>${report.category}</td>
+                        <td><span class="badge bg-warning text-dark">${report.status}</span></td>
+                    </tr>
+                `;
+            });
+
+            data.latest_resolved.forEach(report => {
+                resolvedTable.innerHTML += `
+                    <tr>
+                        <td>${report.title}</td>
+                        <td>${report.category}</td>
+                        <td><span class="badge bg-success">${report.status}</span></td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(error => {
+            console.error('Gagal mengambil data dashboard:', error);
+        });
+});
+</script>
+{% endblock %}

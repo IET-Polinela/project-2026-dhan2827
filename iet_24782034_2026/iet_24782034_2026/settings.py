@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'about',
     'contacts',
     'usermanagement_24782034',
+    'dashboard_24782034',
 ]
 
 AUTH_USER_MODEL = 'usermanagement_24782034.CustomUser'
@@ -125,6 +127,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 LOGIN_REDIRECT_URL = '/reports/'
 LOGOUT_REDIRECT_URL = '/login/'
 LOGIN_URL = '/login/'

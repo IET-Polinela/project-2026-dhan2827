@@ -1,14 +1,39 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
-<div class="text-center">
-    <h1>Selamat Datang</h1>
-    <p>Aplikasi Laporan Smart City</p>
+<section class="hero-section">
+    <div class="hero-text">
+        <p class="hero-label">LAMPUNG TIMUR REPORT</p>
 
-    <a href="{% url 'report_list' %}" class="btn btn-primary">
-        Lihat Laporan
-    </a>
-</div>
+        <h1>
+            Selamat Datang<br>
+            di Aplikasi<br>
+            Laporan Smart City
+        </h1>
+
+        <p class="hero-desc">
+            Laporkan masalah fasilitas publik, lingkungan, dan keamanan
+            secara cepat melalui sistem laporan digital Lampung Timur.
+        </p>
+
+        <div class="d-flex gap-2 mt-4">
+            <a href="{% url 'report_list' %}" class="btn btn-primary px-4">
+                Lihat Laporan
+            </a>
+
+            {% if user.is_authenticated and user.is_admin %}
+            <a href="/dashboard/" class="btn btn-outline-primary px-4">
+                Dashboard
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="hero-image">
+        <img src="{% static 'images/home_lamtim.png' %}" alt="Lampung Timur">
+    </div>
+</section>
 
 {% endblock %}
