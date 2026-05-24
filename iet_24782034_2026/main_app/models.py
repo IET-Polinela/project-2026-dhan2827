@@ -9,6 +9,7 @@ STATUS_CHOICES = [
     ('RESOLVED', 'Resolved'),
 ]
 
+
 class Report(models.Model):
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=100)
@@ -26,7 +27,7 @@ class Report(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default='REPORTED'
+        default='DRAFT'
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
