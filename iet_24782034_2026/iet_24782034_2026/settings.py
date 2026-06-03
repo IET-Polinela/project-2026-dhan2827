@@ -45,11 +45,14 @@ INSTALLED_APPS = [
     'dashboard_24782034',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
 ]
 
 AUTH_USER_MODEL = 'usermanagement_24782034.CustomUser'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -154,3 +157,5 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
