@@ -1,324 +1,169 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>
-        {% block title %}
-            Lampung Timur Report
-        {% endblock %}
-    </title>
+    <title>{% block title %}Lampung Timur Report{% endblock %}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 
 <body class="bg-light">
 
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3">
-
-    <div class="container">
-
-        <!-- LOGO -->
-        <a class="navbar-brand fw-bold d-flex align-items-center gap-2"
-           href="/">
-
-            <img src="{% static 'images/logo_lamtim.png' %}"
-                 alt="Logo"
-                 style="height: 42px;">
-
-            <span class="fs-4">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/">
+                {% load static %}
+                <img src="{% static 'images/logo_lamtim.png' %}" alt="Logo" style="height: 36px;">
                 Lampung Timur Report
-            </span>
+            </a>
 
-        </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/reports/">Reports</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about/">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contacts/">Contact</a></li>
 
-        <!-- TOGGLER -->
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#nav">
-
-            <span class="navbar-toggler-icon"></span>
-
-        </button>
-
-
-        <!-- MENU -->
-        <div class="collapse navbar-collapse" id="nav">
-
-            <div class="d-flex align-items-center gap-2 ms-auto flex-wrap mt-3 mt-lg-0">
-
-
-                <!-- HOME -->
-                <a href="/"
-                   class="btn btn-outline-light btn-sm rounded-pill px-3">
-
-                    <i class="bi bi-house-door"></i>
-                    Home
-
-                </a>
-
-
-                <!-- REPORT -->
-                <a href="/reports/"
-                   class="btn btn-outline-light btn-sm rounded-pill px-3">
-
-                    <i class="bi bi-file-earmark-text"></i>
-                    Reports
-
-                </a>
-
-
-                <!-- ABOUT -->
-                <a href="/about/"
-                   class="btn btn-outline-light btn-sm rounded-pill px-3">
-
-                    <i class="bi bi-info-circle"></i>
-                    About
-
-                </a>
-
-
-                <!-- CONTACT -->
-                <a href="/contacts/"
-                   class="btn btn-outline-light btn-sm rounded-pill px-3">
-
-                    <i class="bi bi-envelope"></i>
-                    Contact
-
-                </a>
-
-
-                <!-- DASHBOARD ADMIN -->
-                {% if user.is_authenticated and user.is_admin %}
-
-                <a href="/dashboard/"
-                   class="btn btn-warning btn-sm rounded-pill px-3 fw-semibold">
-
-                    <i class="bi bi-speedometer2"></i>
-                    Dashboard
-
-                </a>
-
-                {% endif %}
-
-
-                <!-- USER LOGIN -->
-                {% if user.is_authenticated %}
-
-                <div class="bg-light text-dark rounded-pill px-3 py-2 small fw-semibold shadow-sm">
-
-                    <i class="bi bi-person-circle"></i>
-
-                    {{ user.username }}
-
-                    {% if user.is_admin %}
-                        | Admin
-                    {% else %}
-                        | Citizen
+                    {% if user.is_authenticated and user.is_admin %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard/">Dashboard</a>
+                    </li>
                     {% endif %}
 
-                </div>
-
-
-                <!-- LOGOUT -->
-                <form action="{% url 'logout' %}"
-                      method="post"
-                      class="d-inline">
-
-                    {% csrf_token %}
-
-                    <button type="submit"
-                            class="btn btn-danger btn-sm rounded-pill px-3">
-
-                        <i class="bi bi-box-arrow-right"></i>
-                        Logout
-
-                    </button>
-
-                </form>
-
-                {% else %}
-
-
-                <!-- LOGIN -->
-                <a href="{% url 'login' %}"
-                   class="btn btn-light btn-sm rounded-pill px-3">
-
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Login
-
-                </a>
-
-
-                <!-- REGISTER -->
-                <a href="{% url 'register' %}"
-                   class="btn btn-dark btn-sm rounded-pill px-3">
-
-                    <i class="bi bi-person-plus"></i>
-                    Register
-
-                </a>
-
-                {% endif %}
-
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link border-0">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
-
         </div>
-
-    </div>
-
-</nav>
-
-
-<!-- ALERT -->
-<div class="container mt-3">
-
-    {% if messages %}
-
-        {% for message in messages %}
-
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm"
-                 role="alert">
-
-                {{ message }}
-
-                <button class="btn-close"
-                        data-bs-dismiss="alert">
-                </button>
-
-            </div>
-
-        {% endfor %}
-
-    {% endif %}
-
-</div>
-
-
-<!-- CONTENT -->
-<div class="container mt-4">
-
-    <!-- BREADCRUMB -->
-    {% block breadcrumb %}
-
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="/">Home</a>
-            </li>
-        </ol>
     </nav>
 
-    {% endblock %}
-
-
-    <!-- CARD -->
-    <div class="card shadow-sm border-0 rounded-4 p-4">
-
-        {% block content %}
-        {% endblock %}
-
+    <!-- ALERT -->
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                    <button class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
 
-</div>
+    <!-- CONTENT -->
+    <div class="container mt-4">
 
+        <!-- BREADCRUMB -->
+        {% block breadcrumb %}
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+            </ol>
+        </nav>
+        {% endblock %}
 
-<!-- FOOTER -->
-<footer class="text-center mt-5 mb-3 text-muted">
+        <div class="card shadow-sm p-4">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 
-    © 2026 Lampung Timur
-
-</footer>
-
+    <footer class="text-center mt-5 mb-3 text-muted">
+        © 2026 Lampung Timur
+    </footer>
 
 <style>
-
-.hero-section {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 60px;
-    min-height: 70vh;
-    padding: 50px 20px;
-}
-
-.hero-text {
-    flex: 1;
-}
-
-.hero-label {
-    color: #0d6efd;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-}
-
-.hero-text h1 {
-    font-size: 56px;
-    font-weight: 700;
-    line-height: 1.15;
-    color: #101018;
-}
-
-.hero-desc {
-    margin-top: 25px;
-    font-size: 18px;
-    line-height: 1.8;
-    max-width: 620px;
-    color: #333;
-}
-
-.hero-image {
-    flex: 1;
-    text-align: center;
-}
-
-.hero-image img {
-    width: 100%;
-    max-width: 520px;
-    height: 560px;
-    object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-}
-
-@media (max-width: 768px) {
-
     .hero-section {
-        flex-direction: column;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 60px;
+        min-height: 70vh;
+        padding: 50px 20px;
+    }
+
+    .hero-text {
+        flex: 1;
+    }
+
+    .hero-label {
+        color: #0d6efd;
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
     }
 
     .hero-text h1 {
-        font-size: 38px;
+        font-size: 56px;
+        font-weight: 700;
+        line-height: 1.15;
+        color: #101018;
+    }
+
+    .hero-desc {
+        margin-top: 25px;
+        font-size: 18px;
+        line-height: 1.8;
+        max-width: 620px;
+        color: #333;
+    }
+
+    .hero-image {
+        flex: 1;
+        text-align: center;
     }
 
     .hero-image img {
-        height: 360px;
+        width: 100%;
+        max-width: 520px;
+        height: 560px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
 
-    .hero-text .d-flex {
-        justify-content: center;
+    @media (max-width: 768px) {
+        .hero-section {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-text h1 {
+            font-size: 38px;
+        }
+
+        .hero-image img {
+            height: 360px;
+        }
+
+        .hero-text .d-flex {
+            justify-content: center;
+        }
     }
-
-}
-
 </style>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </body>
 </html>

@@ -3,20 +3,11 @@ from .models import Report
 
 
 class ReportForm(forms.ModelForm):
-
     class Meta:
         model = Report
-
-        fields = [
-            'title',
-            'category',
-            'description',
-            'location',
-            'status',
-        ]
+        fields = ['title', 'category', 'description', 'location']
 
         widgets = {
-
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Masukkan judul laporan'
@@ -37,10 +28,6 @@ class ReportForm(forms.ModelForm):
                 'rows': 6,
                 'placeholder': 'Jelaskan detail laporan secara lengkap...'
             }),
-
-            'status': forms.Select(attrs={
-                'class': 'form-select'
-            }),
         }
 
         labels = {
@@ -48,15 +35,4 @@ class ReportForm(forms.ModelForm):
             'category': 'Kategori',
             'description': 'Deskripsi',
             'location': 'Lokasi',
-            'status': 'Status',
         }
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)
-
-        # citizen cuma boleh pilih draft / reported
-        self.fields['status'].choices = [
-            ('DRAFT', 'Draft'),
-            ('REPORTED', 'Reported'),
-        ]

@@ -5,7 +5,6 @@ from django.views import View
 from django.contrib import messages
 from django.http import JsonResponse
 from django.db.models import Q
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Report
 from .forms import ReportForm
@@ -31,35 +30,10 @@ class AdminRequiredMixin:
 
 
 # LIST LAPORAN (boleh untuk semua user)
-class ReportListView(LoginRequiredMixin, ListView):
+class ReportListView(ListView):
     model = Report
     template_name = 'main_app/report_list.html'
     context_object_name = 'reports'
-
-    def get_queryset(self):
-
-        user = self.request.user
-
-        # admin tidak boleh lihat draft orang
-        if user.is_superuser:
-            return Report.objects.exclude(status='DRAFT')
-
-        return (
-            Report.objects.filter(reporter=user)
-            |
-            Report.objects.exclude(status='DRAFT')
-        ).distinct()
-    
-class MyReportListView(LoginRequiredMixin, ListView):
-    model = Report
-    template_name = 'main_app/report_list.html'
-    context_object_name = 'reports'
-
-    def get_queryset(self):
-
-        return Report.objects.filter(
-            reporter=self.request.user
-        ).order_by('-id')
 
 
 # DETAIL LAPORAN (boleh untuk semua user)
@@ -68,74 +42,41 @@ class ReportDetailView(DetailView):
     template_name = 'main_app/detail_report.html'
     context_object_name = 'report'
 
-# CREATE REPORT (LOGIN REQUIRED)
-class ReportCreateView(LoginRequiredMixin, CreateView):
+
+# CREATE (ADMIN ONLY)
+class ReportCreateView(AdminRequiredMixin, CreateView):
     model = Report
     form_class = ReportForm
     template_name = 'main_app/add_report.html'
     success_url = reverse_lazy('report_list')
 
     def form_valid(self, form):
-        form.instance.reporter = self.request.user
         messages.success(self.request, "Laporan berhasil ditambahkan!")
         return super().form_valid(form)
 
-# UPDATE REPORT
-class ReportUpdateView(LoginRequiredMixin, UpdateView):
+
+# UPDATE (ADMIN ONLY)
+class ReportUpdateView(AdminRequiredMixin, UpdateView):
     model = Report
     form_class = ReportForm
     template_name = 'main_app/add_report.html'
     success_url = reverse_lazy('report_list')
-
-    def dispatch(self, request, *args, **kwargs):
-
-        report = self.get_object()
-
-        if request.user.is_superuser:
-            messages.error(request, "Admin tidak boleh mengedit laporan.")
-            return redirect('report_list')
-
-        if report.reporter != request.user:
-            messages.error(request, "Anda bukan pemilik laporan.")
-            return redirect('report_list')
-
-        if report.status != 'DRAFT':
-            messages.error(request, "Hanya laporan DRAFT yang bisa diedit.")
-            return redirect('report_list')
-
-        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         messages.success(self.request, "Laporan berhasil diperbarui!")
         return super().form_valid(form)
-    
-# DELETE REPORT
-class ReportDeleteView(LoginRequiredMixin, DeleteView):
+
+
+# DELETE (ADMIN ONLY)
+class ReportDeleteView(AdminRequiredMixin, DeleteView):
     model = Report
     template_name = 'main_app/delete_report.html'
     success_url = reverse_lazy('report_list')
 
-    def dispatch(self, request, *args, **kwargs):
-
-        report = self.get_object()
-
-        if request.user.is_superuser:
-            messages.error(request, "Admin tidak boleh menghapus laporan.")
-            return redirect('report_list')
-
-        if report.reporter != request.user:
-            messages.error(request, "Anda bukan pemilik laporan.")
-            return redirect('report_list')
-
-        if report.status != 'DRAFT':
-            messages.error(request, "Hanya laporan DRAFT yang bisa dihapus.")
-            return redirect('report_list')
-
-        return super().dispatch(request, *args, **kwargs)
-
     def delete(self, request, *args, **kwargs):
-        messages.success(request, "Laporan berhasil dihapus!")
+        messages.success(self.request, "Laporan berhasil dihapus!")
         return super().delete(request, *args, **kwargs)
+
 
 # UPDATE STATUS (ADMIN ONLY)
 class ReportUpdateStatusView(AdminRequiredMixin, View):

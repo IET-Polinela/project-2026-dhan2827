@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Report
 
+
 class ReportSerializer(serializers.ModelSerializer):
     reporter = serializers.SerializerMethodField()
 
@@ -19,4 +20,4 @@ class ReportSerializer(serializers.ModelSerializer):
         ]
 
     def get_reporter(self, obj):
-        return "Warga Anonim"
+        return 'Warga Anonim'

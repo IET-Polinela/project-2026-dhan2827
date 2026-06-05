@@ -27,7 +27,7 @@ class Report(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default='DRAFT'
+        default='REPORTED'
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
