@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart City Tracker - Citizen Portal</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef5ff, #f8fbff);
+        }
+
+        .navbar-brand {
+            letter-spacing: 0.3px;
+        }
+
+        .spa-container {
+            min-height: calc(100vh - 80px);
+        }
+
+        .hero-card {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+        }
+
+        .icon-box {
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background-color: #e7f1ff;
+            color: #0d6efd;
+        }
+        
+        .sidebar-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        }
+
+        .status-box {
+            margin-top: 10px;
+        }
+
+        .status-title {
+            font-weight: 800;
+            color: #3f4a5a;
+            font-size: 1rem;
+            margin-bottom: 18px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        .status-item span:first-child {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-item .badge {
+            min-width: 38px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: .85rem;
+            font-weight: 600;
+        }
+
+        .status-item i {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold" href="#dashboard">
+                <i class="bi bi-buildings-fill me-2"></i>
+                Smart City Portal
+            </a>
+
+            <div id="nav-menus" class="ms-auto"></div>
+        </div>
+    </nav>
+
+    <!-- Container utama SPA -->
+    <main class="container-fluid px-4 mt-4 spa-container" id="app">
+
+        <!-- Tombol test sementara untuk membuka modal -->
+        <div class="container mt-3">
+            <button class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reportModal">
+                <i class="bi bi-plus-circle me-1"></i>
+                Tambah Laporan Baru
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Report Modal -->
+    <div class="modal fade"
+         id="reportModal"
+         tabindex="-1"
+         aria-labelledby="reportModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+
+            <div class="modal-content border-0 shadow">
+
+                <div class="modal-header bg-primary text-white">
+
+                    <h5 class="modal-title" id="reportModalLabel">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Buat Laporan Baru
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <form id="reportForm">
+
+                        <input type="hidden" id="reportId">
+
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Judul Laporan</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="title"
+                                   placeholder="Contoh: Jalan rusak di depan kampus"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Kategori</label>
+
+                            <select class="form-select"
+                                    id="category"
+                                    required>
+
+                                <option value="Jalan">Jalan</option>
+                                <option value="Lampu Jalan">Lampu Jalan</option>
+                                <option value="Sampah">Sampah</option>
+                                <option value="Drainase">Drainase</option>
+                                <option value="Keamanan">Keamanan</option>
+                                <option value="Lainnya">Lainnya</option>
+
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Lokasi</label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   id="location"
+                                   placeholder="Contoh: Jl. Soekarno Hatta, depan gerbang"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Deskripsi</label>
+
+                            <textarea class="form-control"
+                                      id="description"
+                                      rows="4"
+                                      placeholder="Jelaskan laporan dengan singkat dan jelas"
+                                      required></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    id="btnDraft">
+                                <i class="bi bi-save me-1"></i>
+                                Simpan Draft
+                            </button>
+
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    id="btnSubmit">
+                                <i class="bi bi-send-fill me-1"></i>
+                                Ajukan
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS wajib untuk modal -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script SPA -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/router.js"></script>
+
+</body>
+</html>
