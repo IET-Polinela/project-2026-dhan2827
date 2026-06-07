@@ -26,5 +26,3 @@ function setupLoginForm() {
         }
     });
 }
-
-localStorage.setItem("username", username);
