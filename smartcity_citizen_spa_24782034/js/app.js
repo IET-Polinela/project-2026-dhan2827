@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "http://103.151.63.85:8003";
 
 let currentTab = "my_reports";
 let currentPage = 1;
