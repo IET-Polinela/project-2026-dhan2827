@@ -104,6 +104,7 @@
         <!-- Tombol test sementara untuk membuka modal -->
         <div class="container mt-3">
             <button class="btn btn-primary"
+                    id="btnBukaModal"
                     data-bs-toggle="modal"
                     data-bs-target="#reportModal">
                 <i class="bi bi-plus-circle me-1"></i>
@@ -146,21 +147,23 @@
                         <input type="hidden" id="reportId">
 
                         <div class="mb-3">
-                            <label for="title" class="form-label">Judul Laporan</label>
+                            <label for="inputTitle" class="form-label">Judul Laporan</label>
                             <input type="text"
                                    class="form-control"
-                                   id="title"
+                                   id="inputTitle"
                                    placeholder="Contoh: Jalan rusak di depan kampus"
                                    required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="category" class="form-label">Kategori</label>
+                            <label for="inputCategory" class="form-label">Kategori</label>
 
                             <select class="form-select"
-                                    id="category"
+                                    id="inputCategory"
                                     required>
 
+                                <option value="Infrastruktur">Infrastruktur</option>
+                                <option value="Fasilitas Umum">Fasilitas Umum</option>
                                 <option value="Jalan">Jalan</option>
                                 <option value="Lampu Jalan">Lampu Jalan</option>
                                 <option value="Sampah">Sampah</option>
@@ -172,20 +175,20 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="location" class="form-label">Lokasi</label>
+                            <label for="inputLocation" class="form-label">Lokasi</label>
 
                             <input type="text"
                                    class="form-control"
-                                   id="location"
+                                   id="inputLocation"
                                    placeholder="Contoh: Jl. Soekarno Hatta, depan gerbang"
                                    required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="description" class="form-label">Deskripsi</label>
+                            <label for="inputDescription" class="form-label">Deskripsi</label>
 
                             <textarea class="form-control"
-                                      id="description"
+                                      id="inputDescription"
                                       rows="4"
                                       placeholder="Jelaskan laporan dengan singkat dan jelas"
                                       required></textarea>

@@ -3,6 +3,7 @@ from django.db.models import Q
 from rest_framework import generics, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.exceptions import PermissionDenied, NotFound
 
 from .models import Report
 from .serializers import ReportSerializer
@@ -49,3 +50,19 @@ class ReportViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(reporter=self.request.user)
+
+    def perform_update(self, serializer):
+        report = self.get_object()
+        user = self.request.user
+
+        if report.status == 'RESOLVED':
+            raise PermissionDenied("Laporan yang sudah selesai tidak dapat diubah.")
+
+        if not user.is_staff and not user.is_superuser:
+            if report.reporter != user:
+                raise NotFound()
+
+            if report.status != 'DRAFT':
+                raise PermissionDenied("Laporan yang sudah diajukan tidak dapat diedit.")
+
+        serializer.save()

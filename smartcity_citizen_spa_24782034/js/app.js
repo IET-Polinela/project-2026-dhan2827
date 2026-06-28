@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://103.151.63.85:8003";
+const API_BASE_URL = window.API_BASE_URL || "http://localhost:8000";
 
 let currentTab = "my_reports";
 let currentPage = 1;
@@ -19,6 +19,13 @@ function getAuthHeaders() {
         "Authorization": `Bearer ${getAccessToken()}`
     };
 }
+
+function handleAuthFailure() {
+    alert("Sesi Anda telah habis atau Anda belum login.");
+    localStorage.clear();
+    window.location.hash = "#login";
+}
+
 
 async function loadDashboardData(tab = currentTab, page = currentPage) {
     currentTab = tab;
@@ -44,6 +51,11 @@ async function loadDashboardData(tab = currentTab, page = currentPage) {
                 headers: getAuthHeaders()
             }
         );
+
+        if (response.status === 401) {
+            handleAuthFailure();
+            return;
+        }
 
         if (!response.ok) {
             throw new Error(`Gagal mengambil data. Status: ${response.status}`);
@@ -81,6 +93,11 @@ async function loadSummaryStats() {
                 headers: getAuthHeaders()
             }
         );
+
+        if (response.status === 401) {
+            handleAuthFailure();
+            return;
+        }
 
         if (!response.ok) {
             throw new Error(`Gagal mengambil summary. Status: ${response.status}`);
@@ -123,7 +140,7 @@ function renderList(reports) {
     listContainer.innerHTML = `
         <div class="row g-3">
             ${reports.map(report => `
-                <div class="col-12 col-lg-6">
+                <div class="col col-12 col-lg-6">
                     <div class="report-card card border-0 shadow-sm h-100">
                         <div class="card-body p-3">
 
@@ -296,40 +313,43 @@ function renderDashboardLayout() {
                     <div class="card-body p-3">
 
                         <button class="btn btn-primary w-100 mb-4 py-3 fw-bold shadow-sm"
+                                id="btnBukaModal"
                                 data-bs-toggle="modal"
                                 data-bs-target="#reportModal">
                             <i class="bi bi-plus-circle-fill me-2"></i>
                             Buat Laporan<br>Baru
                         </button>
 
-                        <h6 class="fw-bold text-muted mb-3">
-                            <i class="bi bi-activity me-1"></i>
-                            STATUS LAPORAN ANDA
-                        </h6>
+                        <div id="summaryStats">
+                            <h6 class="fw-bold text-muted mb-3">
+                                <i class="bi bi-activity me-1"></i>
+                                STATUS LAPORAN ANDA
+                            </h6>
 
-                        <div class="status-row">
-                            <span><i class="bi bi-pencil-square me-2"></i>Draf</span>
-                            <span class="status-pill bg-secondary" id="countDraft">0</span>
-                        </div>
+                            <div class="status-row">
+                                <span><i class="bi bi-pencil-square me-2"></i>Draf</span>
+                                <span class="status-pill badge bg-secondary" id="countDraft">0</span>
+                            </div>
 
-                        <div class="status-row">
-                            <span><i class="bi bi-send-fill text-warning me-2"></i>Diajukan</span>
-                            <span class="status-pill bg-warning text-dark" id="countReported">0</span>
-                        </div>
+                            <div class="status-row">
+                                <span><i class="bi bi-send-fill text-warning me-2"></i>Diajukan</span>
+                                <span class="status-pill badge bg-warning text-dark" id="countReported">0</span>
+                            </div>
 
-                        <div class="status-row">
-                            <span><i class="bi bi-patch-check-fill text-info me-2"></i>Terverifikasi</span>
-                            <span class="status-pill bg-info text-dark" id="countVerified">0</span>
-                        </div>
+                            <div class="status-row">
+                                <span><i class="bi bi-patch-check-fill text-info me-2"></i>Terverifikasi</span>
+                                <span class="status-pill badge bg-info text-dark" id="countVerified">0</span>
+                            </div>
 
-                        <div class="status-row">
-                            <span><i class="bi bi-gear-fill text-primary me-2"></i>Diproses</span>
-                            <span class="status-pill bg-primary" id="countProgress">0</span>
-                        </div>
+                            <div class="status-row">
+                                <span><i class="bi bi-gear-fill text-primary me-2"></i>Diproses</span>
+                                <span class="status-pill badge bg-primary" id="countProgress">0</span>
+                            </div>
 
-                        <div class="status-row">
-                            <span><i class="bi bi-check-circle-fill text-success me-2"></i>Selesai</span>
-                            <span class="status-pill bg-success" id="countResolved">0</span>
+                            <div class="status-row">
+                                <span><i class="bi bi-check-circle-fill text-success me-2"></i>Selesai</span>
+                                <span class="status-pill badge bg-success" id="countResolved">0</span>
+                            </div>
                         </div>
 
                     </div>
@@ -350,7 +370,7 @@ function renderDashboardLayout() {
 
                     <li class="nav-item">
                         <button class="nav-link fw-bold text-dark"
-                                id="btnFeed"
+                                id="tabFeedKota"
                                 onclick="switchTab('feed')">
                             <i class="bi bi-globe-americas me-2"></i>
                             Feed Kota (Publik)
@@ -372,10 +392,10 @@ function switchTab(tab) {
     currentPage = 1;
 
     document.getElementById("btnMyReports").classList.toggle("active", tab === "my_reports");
-    document.getElementById("btnFeed").classList.toggle("active", tab === "feed");
+    document.getElementById("tabFeedKota").classList.toggle("active", tab === "feed");
 
     document.getElementById("btnMyReports").classList.toggle("text-dark", tab !== "my_reports");
-    document.getElementById("btnFeed").classList.toggle("text-dark", tab !== "feed");
+    document.getElementById("tabFeedKota").classList.toggle("text-dark", tab !== "feed");
 
     loadDashboardData(tab, 1);
 }
@@ -387,6 +407,11 @@ async function editDraft(id) {
             headers: getAuthHeaders()
         });
 
+        if (response.status === 401) {
+            handleAuthFailure();
+            return;
+        }
+
         if (!response.ok) {
             throw new Error(`Gagal mengambil data draft. Status: ${response.status}`);
         }
@@ -396,10 +421,10 @@ async function editDraft(id) {
         editingReportId = id;
 
         document.getElementById("reportId").value = report.id;
-        document.getElementById("title").value = report.title;
-        document.getElementById("category").value = report.category;
-        document.getElementById("location").value = report.location;
-        document.getElementById("description").value = report.description;
+        document.getElementById("inputTitle").value = report.title;
+        document.getElementById("inputCategory").value = report.category;
+        document.getElementById("inputLocation").value = report.location;
+        document.getElementById("inputDescription").value = report.description;
 
         document.getElementById("reportModalLabel").innerHTML = `
             <i class="bi bi-pencil-square me-2"></i>
@@ -419,10 +444,10 @@ async function submitReport(statusValue) {
     const reportForm = document.getElementById("reportForm");
 
     const payload = {
-        title: document.getElementById("title").value,
-        category: document.getElementById("category").value,
-        location: document.getElementById("location").value,
-        description: document.getElementById("description").value,
+        title: document.getElementById("inputTitle").value,
+        category: document.getElementById("inputCategory").value,
+        location: document.getElementById("inputLocation").value,
+        description: document.getElementById("inputDescription").value,
         status: statusValue
     };
 
@@ -438,6 +463,11 @@ async function submitReport(statusValue) {
             headers: getAuthHeaders(),
             body: JSON.stringify(payload)
         });
+
+        if (response.status === 401) {
+            handleAuthFailure();
+            return;
+        }
 
         if (response.status === 201 || response.status === 200) {
             const modalElement = document.getElementById("reportModal");

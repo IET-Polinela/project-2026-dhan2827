@@ -14,6 +14,18 @@ class CustomLoginView(LoginView):
         messages.success(self.request, "Login berhasil.")
         return super().form_valid(form)
 
+    def get_success_url(self):
+        next_url = self.get_redirect_url()
+        if next_url:
+            return next_url
+
+        user = self.request.user
+
+        if user.is_staff or user.is_superuser:
+            return '/dashboard/'
+
+        return '/'
+
 
 class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('login')

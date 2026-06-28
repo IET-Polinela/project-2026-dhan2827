@@ -6,8 +6,16 @@ function setupLoginForm() {
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
+        const usernameInput =
+            document.getElementById("loginUsername") ||
+            document.getElementById("username");
+
+        const passwordInput =
+            document.getElementById("loginPassword") ||
+            document.getElementById("password");
+
+        const username = usernameInput.value;
+        const password = passwordInput.value;
 
         const result = await requestAPI("/api/token/", "POST", {
             username: username,

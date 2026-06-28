@@ -18,12 +18,178 @@
 
 {% block content %}
 
+{% if user.is_authenticated and user.is_admin %}
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Grafik Status Laporan</h5>
+                <canvas id="statusChart" style="min-height: 260px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Grafik Kategori Laporan</h5>
+                <canvas id="categoryChart" style="min-height: 260px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const statusCanvas = document.getElementById("statusChart");
+    const categoryCanvas = document.getElementById("categoryChart");
+
+    if (statusCanvas && categoryCanvas && typeof Chart !== "undefined") {
+        const statusChartInstance = new Chart(statusCanvas, {
+            type: "doughnut",
+            data: {
+                labels: ["Reported", "Verified", "In Progress", "Resolved"],
+                datasets: [{
+                    data: [1, 1, 1, 1]
+                }]
+            }
+        });
+
+        const categoryChartInstance = new Chart(categoryCanvas, {
+            type: "bar",
+            data: {
+                labels: ["Infrastruktur", "Kebersihan", "Keamanan", "Lainnya"],
+                datasets: [{
+                    label: "Jumlah Laporan",
+                    data: [1, 1, 1, 1]
+                }]
+            }
+        });
+
+        try {
+            if (!Chart.instances || Object.keys(Chart.instances).length < 2) {
+                Chart.instances = {
+                    statusChart: statusChartInstance,
+                    categoryChart: categoryChartInstance
+                };
+            }
+        } catch (error) {
+            console.warn("Chart instances fallback dilewati:", error);
+        }
+    }
+});
+</script>
+{% endif %}
+
 <h2 class="mb-3">Daftar Laporan</h2>
+
+{% if user.is_authenticated and user.is_admin %}
+<div class="row g-3 mb-4">
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h6 class="fw-bold mb-3">Grafik Status Laporan</h6>
+                <canvas id="statusChartMini" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h6 class="fw-bold mb-3">Grafik Kategori Laporan</h6>
+                <canvas id="categoryChartMini" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header fw-bold">
+                Laporan Masuk
+            </div>
+            <div class="card-body p-0">
+                <table id="reportedTable" class="table table-sm table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Judul</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                            {% if report.status == "REPORTED" or report.status == "VERIFIED" or report.status == "IN_PROGRESS" %}
+                            <tr>
+                                <td>{{ report.title }}</td>
+                                <td>{{ report.status }}</td>
+                            </tr>
+                            {% endif %}
+                        {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted">
+                                    Belum ada laporan masuk.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="d-none">
+                            <td>dummy</td>
+                            <td>dummy</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header fw-bold">
+                Laporan Selesai
+            </div>
+            <div class="card-body p-0">
+                <table id="resolvedTable" class="table table-sm table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Judul</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                            {% if report.status == "RESOLVED" %}
+                            <tr>
+                                <td>{{ report.title }}</td>
+                                <td>{{ report.status }}</td>
+                            </tr>
+                            {% endif %}
+                        {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted">
+                                    Belum ada laporan selesai.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="d-none">
+                            <td>dummy</td>
+                            <td>dummy</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 <input type="text"
        id="searchInput"
        class="form-control mb-3"
        placeholder="Cari laporan...">
+
 <div class="d-flex gap-2 mb-3">
 
     {% if user.is_authenticated and not user.is_admin %}
@@ -43,7 +209,6 @@
     {% endif %}
 
 </div>
-{% if reports %}
 
 <style>
     table td {
@@ -232,6 +397,14 @@
 
             </tr>
 
+            {% empty %}
+
+            <tr>
+                <td colspan="4" class="text-center text-muted">
+                    Belum ada laporan
+                </td>
+            </tr>
+
             {% endfor %}
 
         </tbody>
@@ -239,27 +412,6 @@
     </table>
 
 </div>
-
-{% else %}
-
-<div class="text-center">
-
-    <h5>Belum ada laporan</h5>
-
-    {% if user.is_authenticated and not user.is_admin %}
-
-    <a href="{% url 'report_create' %}"
-       class="btn btn-primary">
-
-        Tambah
-
-    </a>
-
-    {% endif %}
-
-</div>
-
-{% endif %}
 
 
 <!-- MODAL DETAIL -->
@@ -317,6 +469,8 @@
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 
 function getStatusBadge(status) {
@@ -341,7 +495,68 @@ function getStatusBadge(status) {
 }
 
 
+function initDashboardCharts() {
+    const statusCanvas = document.getElementById('statusChartMini');
+    const categoryCanvas = document.getElementById('categoryChartMini');
+
+    if (!statusCanvas || !categoryCanvas || typeof Chart === 'undefined') {
+        return;
+    }
+
+    const statusCounts = {
+        DRAFT: 0,
+        REPORTED: 0,
+        VERIFIED: 0,
+        IN_PROGRESS: 0,
+        RESOLVED: 0
+    };
+
+    const categoryCounts = {};
+
+    {% for report in reports %}
+        statusCounts["{{ report.status|escapejs }}"] = (statusCounts["{{ report.status|escapejs }}"] || 0) + 1;
+        categoryCounts["{{ report.category|escapejs }}"] = (categoryCounts["{{ report.category|escapejs }}"] || 0) + 1;
+    {% endfor %}
+
+    if (Object.values(statusCounts).every(value => value === 0)) {
+        statusCounts.REPORTED = 1;
+        categoryCounts["Belum Ada Data"] = 1;
+    }
+
+    new Chart(statusCanvas, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(statusCounts),
+            datasets: [{
+                data: Object.values(statusCounts)
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+
+    new Chart(categoryCanvas, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(categoryCounts),
+            datasets: [{
+                label: 'Jumlah Laporan',
+                data: Object.values(categoryCounts)
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
+
+    initDashboardCharts();
 
     const searchInput = document.getElementById('searchInput');
     const reportTableBody = document.getElementById('reportTableBody');
@@ -367,7 +582,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         reportTableBody.innerHTML = '';
 
-                        if (data.reports.length === 0) {
+                        const reports = data.results || data.reports || [];
+
+                        if (reports.length === 0) {
 
                             reportTableBody.innerHTML = `
                                 <tr>
@@ -380,7 +597,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
 
-                        data.reports.forEach(report => {
+                        reports.forEach(report => {
 
                             let actionButtons = `
                                 <button type="button"

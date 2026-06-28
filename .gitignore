@@ -1,17 +1,25 @@
-Env/
-venv/
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
+*.sqlite3
 db.sqlite3
-staticfiles/
 
-.env
-.env.*
+# Virtual environment
+Env/
+venv/
+.venv/
 
-.DS_Store
-Thumbs.db
+# Coverage
+.coverage
+htmlcov/
 
-.vscode/
+# Playwright
+playwright-report/
+test-results/
+node_modules/
+
+# Local backups
+*.backup*
+tests_lama.py

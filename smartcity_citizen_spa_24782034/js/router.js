@@ -12,8 +12,8 @@ const routes = {
                     </div>
 
                     <form id="loginForm">
-                        <input type="text" id="username" class="form-control mb-3" placeholder="Username" required>
-                        <input type="password" id="password" class="form-control mb-3" placeholder="Password" required>
+                        <input type="text" id="loginUsername" class="form-control mb-3" placeholder="Username" required>
+                        <input type="password" id="loginPassword" class="form-control mb-3" placeholder="Password" required>
 
                         <button type="submit" class="btn btn-primary w-100 fw-semibold">
                             <i class="bi bi-box-arrow-in-right me-1"></i>
@@ -26,9 +26,29 @@ const routes = {
     `
 };
 
+function getStoredAccessToken() {
+    return (
+        localStorage.getItem("access_token") ||
+        localStorage.getItem("access") ||
+        localStorage.getItem("accessToken")
+    );
+}
+
 function handleRouting() {
-    updateNavbar();
+    const token = getStoredAccessToken();
     const hash = window.location.hash || "#login";
+
+    if (!token && hash === "#dashboard") {
+        window.location.hash = "#login";
+        return;
+    }
+
+    if (token && (hash === "#login" || hash === "#register")) {
+        window.location.hash = "#dashboard";
+        return;
+    }
+
+    updateNavbar();
 
     if (hash === "#dashboard") {
         if (typeof renderDashboardLayout === "function") {
@@ -52,7 +72,7 @@ function handleRouting() {
 
 function updateNavbar() {
     const navMenus = document.getElementById("nav-menus");
-    const token = localStorage.getItem("access_token");
+    const token = getStoredAccessToken();
     const username = localStorage.getItem("username") || "Warga";
 
     if (!navMenus) return;

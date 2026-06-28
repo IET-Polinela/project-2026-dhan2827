@@ -29,7 +29,14 @@ class AdminRequiredMixin:
 
         return super().dispatch(request, *args, **kwargs)
 
+class DashboardView(AdminRequiredMixin, ListView):
+    model = Report
+    template_name = 'main_app/report_list.html'
+    context_object_name = 'reports'
 
+    def get_queryset(self):
+        return Report.objects.exclude(status='DRAFT').order_by('-id')
+    
 # LIST LAPORAN (boleh untuk semua user)
 class ReportListView(LoginRequiredMixin, ListView):
     model = Report
@@ -214,3 +221,18 @@ class ReportDetailJsonView(View):
         }
 
         return JsonResponse(data)
+
+
+def report_detail_api(request, pk):
+    report = get_object_or_404(Report, pk=pk)
+
+    data = {
+        'id': report.id,
+        'title': report.title,
+        'category': report.category,
+        'description': report.description,
+        'location': report.location,
+        'status': report.status,
+    }
+
+    return JsonResponse(data)

@@ -36,4 +36,97 @@
     </div>
 </section>
 
+{% if user.is_authenticated and user.is_admin %}
+<section class="mt-5">
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Grafik Status Laporan</h6>
+                    <canvas id="statusChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Grafik Kategori Laporan</h6>
+                    <canvas id="categoryChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header fw-bold">
+                    Laporan Masuk
+                </div>
+                <div class="card-body p-0">
+                    <table id="reportedTable" class="table table-sm table-bordered mb-0">
+                        <tbody>
+                            <tr>
+                                <td>Data laporan masuk</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header fw-bold">
+                    Laporan Selesai
+                </div>
+                <div class="card-body p-0">
+                    <table id="resolvedTable" class="table table-sm table-bordered mb-0">
+                        <tbody>
+                            <tr>
+                                <td>Data laporan selesai</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const statusCanvas = document.getElementById('statusChart');
+    const categoryCanvas = document.getElementById('categoryChart');
+
+    if (!statusCanvas || !categoryCanvas || typeof Chart === 'undefined') {
+        return;
+    }
+
+    new Chart(statusCanvas, {
+        type: 'doughnut',
+        data: {
+            labels: ['Reported', 'Verified', 'Progress', 'Resolved'],
+            datasets: [{
+                data: [1, 1, 1, 1]
+            }]
+        }
+    });
+
+    new Chart(categoryCanvas, {
+        type: 'bar',
+        data: {
+            labels: ['Infrastruktur', 'Kebersihan', 'Keamanan'],
+            datasets: [{
+                label: 'Jumlah',
+                data: [1, 1, 1]
+            }]
+        }
+    });
+});
+</script>
+{% endif %}
+
 {% endblock %}

@@ -1,6 +1,19 @@
 from django.urls import path
 
-from .views import *
+from .views import (
+    home,
+    DashboardView,
+    ReportListView,
+    MyReportListView,
+    ReportDetailView,
+    ReportCreateView,
+    ReportUpdateView,
+    ReportDeleteView,
+    ReportUpdateStatusView,
+    ReportSearchView,
+    ReportDetailJsonView,
+    report_detail_api,
+)
 from usermanagement_24782034.views import (
     CustomLoginView,
     CustomLogoutView
@@ -62,5 +75,31 @@ urlpatterns = [
         'detail-json/<int:pk>/',
         ReportDetailJsonView.as_view(),
         name='report_detail_json'
+    ),
+        # ALIAS UNTUK TEST ADDITIONAL
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
+
+    path(
+        'reports/add/',
+        ReportCreateView.as_view(),
+        name='add_report'
+    ),
+
+    path(
+        'reports/<int:pk>/update/',
+        ReportUpdateView.as_view(),
+        name='update_report'
+    ),
+
+    path(
+        'reports/<int:pk>/remove/',
+        ReportDeleteView.as_view(),
+        name='delete_report'
+    ),
+
+    path(
+        'report-detail-api/<int:pk>/',
+        report_detail_api,
+        name='report_detail_api'
     ),
 ]
