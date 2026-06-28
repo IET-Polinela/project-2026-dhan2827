@@ -1,4 +1,4 @@
-const API_BASE_URL = window.API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = window.API_BASE_URL || "http://103.151.63.85:8003";
 
 let currentTab = "my_reports";
 let currentPage = 1;
