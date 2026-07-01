@@ -158,14 +158,20 @@ async function loadSummaryStats() {
         const totalProgress = reports.filter(r => r.status === "IN_PROGRESS").length;
         const totalResolved = reports.filter(r => r.status === "RESOLVED").length;
 
-        document.getElementById("countDraft").innerText = totalDraft;
-        document.getElementById("countReported").innerText = totalReported;
-        document.getElementById("countVerified").innerText = totalVerified;
-        document.getElementById("countProgress").innerText = totalProgress;
-        document.getElementById("countResolved").innerText = totalResolved;
+        const draftEl = document.getElementById("countDraft");
+        const reportedEl = document.getElementById("countReported");
+        const verifiedEl = document.getElementById("countVerified");
+        const progressEl = document.getElementById("countProgress");
+        const resolvedEl = document.getElementById("countResolved");
+
+        if (draftEl) draftEl.innerText = totalDraft;
+        if (reportedEl) reportedEl.innerText = totalReported;
+        if (verifiedEl) verifiedEl.innerText = totalVerified;
+        if (progressEl) progressEl.innerText = totalProgress;
+        if (resolvedEl) resolvedEl.innerText = totalResolved;
 
     } catch (error) {
-        console.error(error);
+        console.error("loadSummaryStats:", error);
     }
 }
 
