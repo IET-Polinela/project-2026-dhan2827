@@ -5,6 +5,52 @@ let currentPage = 1;
 let allReports = [];
 let editingReportId = null;
 
+function getCurrentUsername() {
+    return (
+        localStorage.getItem("username") ||
+        localStorage.getItem("current_username") ||
+        localStorage.getItem("user") ||
+        ""
+    );
+}
+
+function getTokenPayload() {
+    const token = getAccessToken();
+
+    if (!token || !token.includes(".")) {
+        return {};
+    }
+
+    try {
+        const payload = token.split(".")[1];
+        const normalizedPayload = payload.replace(/-/g, "+").replace(/_/g, "/");
+        const decodedPayload = atob(normalizedPayload);
+        return JSON.parse(decodedPayload);
+    } catch (error) {
+        return {};
+    }
+}
+
+function isCurrentUserAdmin() {
+    const username = getCurrentUsername().toLowerCase();
+    const role = (
+        localStorage.getItem("role") ||
+        localStorage.getItem("user_role") ||
+        ""
+    ).toLowerCase();
+
+    const payload = getTokenPayload();
+
+    return (
+        username === "admin" ||
+        role === "admin" ||
+        localStorage.getItem("is_admin") === "true" ||
+        payload.is_admin === true ||
+        payload.is_staff === true ||
+        payload.is_superuser === true
+    );
+}
+
 function getAccessToken() {
     return (
         localStorage.getItem("access_token") ||
@@ -197,6 +243,10 @@ function renderList(reports) {
 }
 
 function renderActionButtons(report) {
+    if (isCurrentUserAdmin()) {
+        return "";
+    }
+
     if (report.status === "DRAFT" && report.is_owner) {
         return `
             <button class="btn btn-sm btn-outline-primary"
@@ -312,13 +362,20 @@ function renderDashboardLayout() {
                 <div class="card border-0 shadow-sm rounded-3">
                     <div class="card-body p-3">
 
-                        <button class="btn btn-primary w-100 mb-4 py-3 fw-bold shadow-sm"
-                                id="btnBukaModal"
-                                data-bs-toggle="modal"
-                                data-bs-target="#reportModal">
-                            <i class="bi bi-plus-circle-fill me-2"></i>
-                            Buat Laporan<br>Baru
-                        </button>
+                        ${!isCurrentUserAdmin() ? `
+                            <button class="btn btn-primary w-100 mb-4 py-3 fw-bold shadow-sm"
+                                    id="btnBukaModal"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#reportModal">
+                                <i class="bi bi-plus-circle-fill me-2"></i>
+                                Buat Laporan<br>Baru
+                            </button>
+                        ` : `
+                            <div class="alert alert-info small mb-4">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Admin hanya dapat memantau laporan dan mengubah status melalui dashboard backend.
+                            </div>
+                        `}
 
                         <div id="summaryStats">
                             <h6 class="fw-bold text-muted mb-3">
@@ -441,6 +498,11 @@ async function editDraft(id) {
 }
 
 async function submitReport(statusValue) {
+    if (isCurrentUserAdmin()) {
+        alert("Admin tidak boleh membuat laporan warga.");
+        return;
+    }
+
     const reportForm = document.getElementById("reportForm");
 
     const payload = {
