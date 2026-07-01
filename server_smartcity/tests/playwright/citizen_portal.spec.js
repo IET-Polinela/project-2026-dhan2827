@@ -2,6 +2,10 @@ const { test, expect } = require('@playwright/test');
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8000';
 const SPA_URL = process.env.SPA_URL || 'http://127.0.0.1:5500/index.html';
+console.log("=================================");
+console.log("BASE_URL =", BASE_URL);
+console.log("SPA_URL  =", SPA_URL);
+console.log("=================================");
 
 const TEST_CITIZEN_USERNAME = 'warga';
 const TEST_CITIZEN_PASSWORD = 'warga12345';

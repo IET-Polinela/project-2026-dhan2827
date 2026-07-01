@@ -1,4 +1,7 @@
-const BASE_URL = window.API_BASE_URL || "http://localhost:8000";
+/// <reference path="auth.js" />
+function getBaseURL() {
+    return window.API_BASE_URL || "http://localhost:8000";
+}
 
 async function requestAPI(endpoint, method = "GET", bodyData = null) {
     const token = localStorage.getItem("access_token");
@@ -18,7 +21,7 @@ async function requestAPI(endpoint, method = "GET", bodyData = null) {
         options.body = JSON.stringify(bodyData);
     }
 
-    const response = await fetch(BASE_URL + endpoint, options);
+    const response = await fetch(getBaseURL() + endpoint, options);
 
     let data = null;
     try {
@@ -28,15 +31,13 @@ async function requestAPI(endpoint, method = "GET", bodyData = null) {
     }
 
     if (response.status === 401) {
-        alert("Sesi Anda telah habis atau Anda belum login.");
-        localStorage.clear();
-        window.location.hash = "#login";
+        handleAuthFailure();
+
         return {
             status: response.status,
             data: data
         };
     }
-
     return {
         status: response.status,
         data: data

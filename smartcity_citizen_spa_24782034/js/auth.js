@@ -81,6 +81,18 @@ async function registerCitizen(username, email, password) {
     return result;
 }
 
+function handleAuthFailure() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("username");
+
+    window.location.hash = "#login";
+
+    if (typeof handleRouting === "function") {
+        handleRouting();
+    }
+}
+
 function setupRegisterForm() {
     const form = document.getElementById("registerForm");
 
